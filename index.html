@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DecaDrive — Master the Road With Confidence</title>
+
+    <!-- Material Icons for UI affordances -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <!-- Custom styles with light/dark theme support -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Main Vue app container -->
+    <div id="app">
+      <!-- Navigation bar - always visible across all pages -->
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="nav-left" @click="goTo('home')">
+            <!-- DecaDrive logo with car icon -->
+            <img src="assets/logo.svg" alt="DecaDrive Logo" class="logo-icon" />
+            <span class="logo-text">DecaDrive</span>
+          </div>
+
+          <div class="nav-right">
+            <!-- Navigation links -->
+            <button class="nav-link" @click="goTo('lessons')">
+              <span class="material-icons">school</span>
+              <span>Lessons</span>
+            </button>
+
+            <button class="nav-link cart-link" @click="goTo('cart')">
+              <span class="material-icons">shopping_cart</span>
+              <span>Cart</span>
+              <span v-if="cartCount > 0" class="cart-badge"
+                >{{ cartCount }}</span
+              >
+            </button>
+
+            <!-- Light/Dark mode toggle -->
+            <label class="theme-toggle" title="Toggle dark mode">
+              <input type="checkbox" v-model="darkMode" @change="toggleTheme" />
+              <span class="material-icons"
+                >{{ darkMode ? 'light_mode' : 'dark_mode' }}</span
+              >
+            </label>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main content area with page switching via v-if -->
+      <main class="main-content">
+        <!-- HOME / LANDING PAGE -->
+        <!-- Purpose: Welcome screen with branding and CTA to browse lessons -->
+        <div v-if="currentPage === 'home'" class="page page-home">
+          <div class="hero">
+            <img src="assets/logo.svg" alt="DecaDrive" class="hero-logo" />
+            <h1 class="hero-title">DecaDrive</h1>
+            <p class="hero-slogan">Master the Road With Confidence</p>
+            <p class="hero-subtitle">
+              Professional driving lessons tailored to your needs
+            </p>
+            <button class="cta-button" @click="goTo('lessons')">
+              <span>Browse Lessons</span>
+              <span class="material-icons">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- LESSONS PAGE -->
+        <!-- Purpose: Display all available lessons with search, sort, and add-to-cart functionality -->
+        <div v-else-if="currentPage === 'lessons'" class="page page-lessons">
+          <div class="page-header">
+            <h1>Available Lessons</h1>
+            <p>Find the perfect driving lesson for your journey</p>
+          </div>
+
+          <!-- Search and sort controls -->
+          <div class="controls-bar">
+            <!-- Search input - calls backend API as user types -->
+            <div class="search-box">
+              <span class="material-icons">search</span>
+              <input
+                type="text"
+                v-model="searchQuery"
+                @input="searchLessons"
+                placeholder="Search lessons by subject or location..."
+                class="search-input"
+              />
+              <button
+                v-if="searchQuery"
+                @click="clearSearch"
+                class="clear-search"
+              >
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+
+            <!-- Sort controls - allow sorting by different fields -->
+            <div class="sort-controls">
+              <label>Sort by:</label>
+              <select v-model="sortBy" @change="sortLessons">
+                <option value="subject">Subject</option>
+                <option value="location">Location</option>
+                <option value="price">Price</option>
+                <option value="spaces">Spaces</option>
+              </select>
+
+              <button
+                @click="toggleSortOrder"
+                class="sort-order-btn"
+                :title="sortOrder === 'asc' ? 'Ascending' : 'Descending'"
+              >
+                <span class="material-icons"
+                  >{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward'
+                  }}</span
+                >
+              </button>
+            </div>
+          </div>
+
+          <!-- Loading indicator while fetching lessons -->
+          <div v-if="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading lessons...</p>
+          </div>
+
+          <!-- Error message if API call fails -->
+          <div v-else-if="error" class="error-message">
+            <span class="material-icons">error</span>
+            <p>{{ error }}</p>
+            <button @click="fetchLessons" class="retry-btn">Retry</button>
+          </div>
+
+          <!-- Lessons grid - displays lesson cards -->
+          <div v-else-if="lessons.length > 0" class="lessons-grid">
+            <!-- Lesson card component (rendered inline for simplicity) -->
+            <div
+              v-for="lesson in lessons"
+              :key="lesson._id"
+              class="lesson-card"
+            >
+              <!-- Unsplash image from backend -->
+              <div class="lesson-image-container">
+                <img
+                  :src="lesson.image"
+                  :alt="lesson.subject"
+                  class="lesson-image"
+                />
+                <!-- Overlay badge showing available spaces -->
+                <div
+                  class="spaces-badge"
+                  :class="{ 'spaces-low': lesson.spaces < 3, 'spaces-none': lesson.spaces === 0 }"
+                >
+                  <span class="material-icons">event_seat</span>
+                  <span>{{ lesson.spaces }} left</span>
+                </div>
+              </div>
+
+              <div class="lesson-info">
+                <h3 class="lesson-subject">{{ lesson.subject }}</h3>
+
+                <div class="lesson-meta">
+                  <div class="meta-item">
+                    <span class="material-icons">location_on</span>
+                    <span>{{ lesson.location }}</span>
+                  </div>
+                  <div class="meta-item price">
+                    <span class="material-icons">payments</span>
+                    <span>${{ lesson.price }}</span>
+                  </div>
+                </div>
+
+                <!-- Add to cart button - disabled if no spaces available -->
+                <button
+                  @click="addToCart(lesson)"
+                  :disabled="lesson.spaces === 0 || isProcessing"
+                  class="add-to-cart-btn"
+                  :class="{ 'in-cart': isInCart(lesson._id) }"
+                >
+                  <span class="material-icons"
+                    >{{ lesson.spaces === 0 ? 'block' : isInCart(lesson._id) ?
+                    'check' : 'add_shopping_cart' }}</span
+                  >
+                  <span
+                    >{{ lesson.spaces === 0 ? 'Full' : isInCart(lesson._id) ?
+                    'Added' : 'Add to Cart' }}</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state when no lessons found -->
+          <div v-else class="empty-state">
+            <span class="material-icons">search_off</span>
+            <p>No lessons found</p>
+            <button v-if="searchQuery" @click="clearSearch" class="retry-btn">
+              Clear search
+            </button>
+          </div>
+        </div>
+
+        <!-- CART PAGE -->
+        <!-- Purpose: Review selected lessons, adjust quantities, and proceed to checkout -->
+        <div v-else-if="currentPage === 'cart'" class="page page-cart">
+          <div class="page-header">
+            <h1>Your Cart</h1>
+            <p v-if="cart.length > 0">Review your selected lessons</p>
+          </div>
+
+          <!-- Cart is empty state -->
+          <div v-if="cart.length === 0" class="empty-state">
+            <span class="material-icons">shopping_cart</span>
+            <p>Your cart is empty</p>
+            <button @click="goTo('lessons')" class="cta-button">
+              Browse Lessons
+            </button>
+          </div>
+
+          <!-- Cart items list -->
+          <div v-else class="cart-container">
+            <div class="cart-items">
+              <!-- Cart item component (inline) -->
+              <div v-for="item in cart" :key="item.id" class="cart-item">
+                <img
+                  :src="item.lesson.image"
+                  :alt="item.lesson.subject"
+                  class="cart-item-image"
+                />
+
+                <div class="cart-item-info">
+                  <h3>{{ item.lesson.subject }}</h3>
+                  <p class="cart-item-location">
+                    <span class="material-icons">location_on</span>
+                    {{ item.lesson.location }}
+                  </p>
+                  <p class="cart-item-price">
+                    ${{ item.lesson.price }} × {{ item.qty }}
+                  </p>
+                </div>
+
+                <div class="cart-item-actions">
+                  <!-- Quantity controls -->
+                  <div class="qty-controls">
+                    <button
+                      @click="decreaseQty(item)"
+                      :disabled="isProcessing"
+                      class="qty-btn"
+                    >
+                      <span class="material-icons">remove</span>
+                    </button>
+                    <span class="qty-display">{{ item.qty }}</span>
+                    <button
+                      @click="increaseQty(item)"
+                      :disabled="item.qty >= item.lesson.spaces || isProcessing"
+                      class="qty-btn"
+                    >
+                      <span class="material-icons">add</span>
+                    </button>
+                  </div>
+
+                  <!-- Remove button -->
+                  <button
+                    @click="removeFromCart(item)"
+                    :disabled="isProcessing"
+                    class="remove-btn"
+                  >
+                    <span class="material-icons">delete</span>
+                    <span>Remove</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cart summary -->
+            <div class="cart-summary">
+              <h3>Order Summary</h3>
+              <div class="summary-row">
+                <span>Items:</span>
+                <span>{{ cartCount }}</span>
+              </div>
+              <div class="summary-row total">
+                <span>Total:</span>
+                <span>${{ cartTotal }}</span>
+              </div>
+              <button @click="goTo('checkout')" class="checkout-btn">
+                <span>Proceed to Checkout</span>
+                <span class="material-icons">arrow_forward</span>
+              </button>
+              <button @click="goTo('lessons')" class="continue-shopping-btn">
+                Continue Shopping
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHECKOUT PAGE -->
+        <!-- Purpose: Collect user info and place order with validation -->
+        <div v-else-if="currentPage === 'checkout'" class="page page-checkout">
+          <div class="page-header">
+            <h1>Checkout</h1>
+            <p>Complete your booking</p>
+          </div>
+
+          <div class="checkout-container">
+            <!-- Order summary (read-only) -->
+            <div class="checkout-summary">
+              <h3>Order Summary</h3>
+              <div v-for="item in cart" :key="item.id" class="summary-item">
+                <span>{{ item.lesson.subject }} × {{ item.qty }}</span>
+                <span>${{ item.lesson.price * item.qty }}</span>
+              </div>
+              <div class="summary-total">
+                <strong>Total:</strong>
+                <strong>${{ cartTotal }}</strong>
+              </div>
+            </div>
+
+            <!-- Checkout form with validation -->
+            <form @submit.prevent="submitOrder" class="checkout-form">
+              <h3>Your Information</h3>
+
+              <!-- Name field - letters and spaces only -->
+              <div class="form-group">
+                <label for="name">
+                  <span class="material-icons">person</span>
+                  <span>Full Name</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  v-model="user.name"
+                  @input="validateName"
+                  @blur="validateName"
+                  placeholder="Enter your full name"
+                  :class="{ 'invalid': validationErrors.name }"
+                />
+                <!-- Live validation error message -->
+                <div v-if="validationErrors.name" class="field-error">
+                  <span class="material-icons">error</span>
+                  <span>{{ validationErrors.name }}</span>
+                </div>
+              </div>
+
+              <!-- Phone field - digits only -->
+              <div class="form-group">
+                <label for="phone">
+                  <span class="material-icons">phone</span>
+                  <span>Phone Number</span>
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  v-model="user.phone"
+                  @input="validatePhone"
+                  @blur="validatePhone"
+                  placeholder="Enter phone number (digits only)"
+                  :class="{ 'invalid': validationErrors.phone }"
+                />
+                <!-- Live validation error message -->
+                <div v-if="validationErrors.phone" class="field-error">
+                  <span class="material-icons">error</span>
+                  <span>{{ validationErrors.phone }}</span>
+                </div>
+              </div>
+
+              <!-- Submit button - disabled until form is valid -->
+              <button
+                type="submit"
+                class="submit-order-btn"
+                :disabled="!isFormValid || isProcessing"
+              >
+                <span v-if="isProcessing">Processing...</span>
+                <span v-else>Place Order</span>
+                <span v-if="!isProcessing" class="material-icons"
+                  >check_circle</span
+                >
+              </button>
+
+              <!-- General error message from API -->
+              <div v-if="error" class="form-error">
+                <span class="material-icons">error</span>
+                <span>{{ error }}</span>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- ORDER SUCCESS PAGE -->
+        <!-- Purpose: Confirm order placement and show order details -->
+        <div
+          v-else-if="currentPage === 'orderSuccess'"
+          class="page page-success"
+        >
+          <div class="success-container">
+            <div class="success-icon">
+              <span class="material-icons">check_circle</span>
+            </div>
+
+            <img src="assets/logo.svg" alt="DecaDrive" class="success-logo" />
+
+            <h1>Order Confirmed!</h1>
+            <p class="success-message">Thank you for booking with DecaDrive</p>
+
+            <div class="order-details">
+              <div class="detail-row">
+                <span class="label">Order ID:</span>
+                <span class="value">{{ orderId }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Name:</span>
+                <span class="value">{{ user.name }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Phone:</span>
+                <span class="value">{{ user.phone }}</span>
+              </div>
+              <div class="detail-row total">
+                <span class="label">Total Paid:</span>
+                <span class="value">${{ lastOrderTotal }}</span>
+              </div>
+            </div>
+
+            <button @click="returnToLessons" class="cta-button">
+              <span>Browse More Lessons</span>
+              <span class="material-icons">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>&copy; 2025 Gabriel David-Decker.</p>
+      </footer>
+    </div>
+
+    <!-- Vue 2 from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+
+    <!-- Main application JavaScript -->
+    <script src="app.js"></script>
+  </body>
+</html>
