@@ -18,7 +18,7 @@
  * Change this to your deployed backend URL when ready
  * Example: 'https://your-backend.onrender.com' or 'http://localhost:3000'
  */
-const BACKEND_URL = "http://localhost:8080";
+const BACKEND_URL = "https://decadrive-backend.onrender.com";
 
 // ============================================================================
 // MAIN VUE INSTANCE
