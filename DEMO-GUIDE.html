@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DecaDrive - Demo Guide</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 20px;
+      line-height: 1.6;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #3b82f6;
+      border-bottom: 3px solid #3b82f6;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #2563eb;
+      margin-top: 30px;
+    }
+    .step {
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #3b82f6;
+      border-radius: 4px;
+    }
+    .step h3 {
+      margin-top: 0;
+      color: #1a1a1a;
+    }
+    .talking-points {
+      background: #dbeafe;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .talking-points ul {
+      margin: 5px 0;
+      padding-left: 20px;
+    }
+    code {
+      background: #e5e7eb;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+    .highlight {
+      background: #fef3c7;
+      padding: 2px 4px;
+      font-weight: 600;
+    }
+    .important {
+      background: #fee2e2;
+      border-left: 4px solid #ef4444;
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+    }
+    .checklist li::before {
+      content: "☐ ";
+      font-size: 1.2em;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚗 DecaDrive Frontend - Demo Guide</h1>
+    
+    <p><strong>Purpose:</strong> This guide helps you present the DecaDrive frontend during your coursework demo.</p>
+
+    <div class="important">
+      <strong>⚠️ Before You Start:</strong>
+      <ul>
+        <li>Backend is running at <code>BACKEND_URL</code> (check app.js line 18)</li>
+        <li>Frontend server is running (python3 -m http.server 8080)</li>
+        <li>Browser DevTools is open (F12)</li>
+        <li>Network tab is visible and cleared</li>
+      </ul>
+    </div>
+
+    <h2>📋 Demo Flow (10-15 minutes)</h2>
+
+    <div class="step">
+      <h3>1️⃣ Introduction & Overview (2 min)</h3>
+      <p><strong>Show:</strong> Home page</p>
+      <div class="talking-points">
+        <strong>Say:</strong>
+        <ul>
+          <li>"This is DecaDrive, a single-page Vue 2 application for booking driving lessons"</li>
+          <li>"Built with Vue 2 via CDN, no build tools, ready for GitHub Pages"</li>
+          <li>"Uses fetch() for all API calls as per requirements"</li>
+          <li>"Page switching uses v-if instead of Vue Router"</li>
+        </ul>
+      </div>
+      <p><strong>Point out:</strong> Clean logo, slogan, CTA button, theme toggle in navbar</p>
+    </div>
+
+    <div class="step">
+      <h3>2️⃣ Theme Toggle (1 min)</h3>
+      <p><strong>Action:</strong> Click theme toggle icon in navbar</p>
+      <div class="talking-points">
+        <strong>Say:</strong>
+        <ul>
+          <li>"Smooth transition between light and dark modes"</li>
+          <li>"Uses CSS custom properties for theming"</li>
+          <li>"Preference saved to localStorage and persists on refresh"</li>
+        </ul>
+      </div>
+      <p><strong>Do:</strong> Toggle theme 2-3 times to show transition</p>
+    </div>
+
+    <div class="step">
+      <h3>3️⃣ Lessons Page - Browse & Search (3 min)</h3>
+      <p><strong>Action:</strong> Click "Browse Lessons" button</p>
+      <div class="talking-points">
+        <strong>Show Network Tab:</strong>
+        <ul>
+          <li>"Here's the GET /lessons request fetching data from backend"</li>
+          <li>"Each lesson has Unsplash image URL from backend"</li>
+          <li>"Notice the beautiful cards with spaces badges"</li>
+        </ul>
+      </div>
+      
+      <p><strong>Search Demo:</strong></p>
+      <ol>
+        <li>Type in search box (e.g., "highway" or a location)</li>
+        <li>Show Network tab: "GET /lessons?q=highway"</li>
+        <li>Clear search and show all lessons return</li>
+      </ol>
+      
+      <div class="talking-points">
+        <strong>Say:</strong>
+        <ul>
+          <li>"Search is real-time - calls backend as you type"</li>
+          <li>"This is search-as-you-type with fetch() API"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>4️⃣ Sorting Functionality (2 min)</h3>
+      <p><strong>Action:</strong> Use sort controls</p>
+      <ol>
+        <li>Select "Price" from dropdown</li>
+        <li>Show Network: "GET /lessons?sortBy=price&order=asc"</li>
+        <li>Click arrow to toggle descending</li>
+        <li>Try sorting by "Spaces"</li>
+      </ol>
+      <div class="talking-points">
+        <strong>Say:</strong>
+        <ul>
+          <li>"Sort sends query parameters to backend"</li>
+          <li>"Can sort by subject, location, price, or spaces"</li>
+          <li>"Ascending or descending order"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>5️⃣ Add to Cart & Cart Management (3 min)</h3>
+      <p><strong>Action:</strong> Add items to cart</p>
+      <ol>
+        <li>Click "Add to Cart" on 3-4 different lessons</li>
+        <li>Point out cart badge incrementing in navbar</li>
+        <li>Try clicking on a lesson with 0 spaces (button disabled)</li>
+        <li>Navigate to Cart page</li>
+      </ol>
+      
+      <p><strong>Cart Page Demo:</strong></p>
+      <ol>
+        <li>Show cart items with images and details</li>
+        <li>Use +/- buttons to adjust quantities</li>
+        <li>Try exceeding available spaces (button disabled)</li>
+        <li>Remove one item</li>
+        <li>Show total price updating in real-time</li>
+      </ol>
+      
+      <div class="talking-points">
+        <strong>Say:</strong>
+        <ul>
+          <li>"Cart state managed in Vue data object"</li>
+          <li>"Quantity validation prevents ordering more than available spaces"</li>
+          <li>"Total calculates automatically using computed property"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>6️⃣ Checkout & Form Validation (4 min)</h3>
+      <p><strong>Action:</strong> Click "Proceed to Checkout"</p>
+      
+      <p><strong>Validation Demo (IMPORTANT):</strong></p>
+      
+      <p>1. <strong>Try invalid name:</strong></p>
+      <ul>
+        <li>Type "John123" → See error: "Name must contain only letters and spaces"</li>
+        <li>Notice submit button is disabled</li>
+      </ul>
+      
+      <p>2. <strong>Try invalid phone:</strong></p>
+      <ul>
+        <li>Fix name to "John Doe"</li>
+        <li>Type "12abc" → See error: "Phone must contain only digits"</li>
+        <li>Type "123" → See error: "Phone must be at least 6 digits"</li>
+      </ul>
+      
+      <p>3. <strong>Submit valid order:</strong></p>
+      <ul>
+        <li>Name: "John Doe" (letters and spaces only)</li>
+        <li>Phone: "1234567890" (digits only, minimum 6)</li>
+        <li>Submit button now enabled</li>
+        <li>Click "Place Order"</li>
+      </ul>
+      
+      <div class="talking-points">
+        <strong>Show Network Tab:</strong>
+        <ul>
+          <li>"POST /orders creates the order"</li>
+          <li>"Then multiple PUT /lessons/:id requests to update spaces"</li>
+          <li>"This is Promise-based async flow with fetch()"</li>
+        </ul>
+      </div>
+      
+      <div class="talking-points">
+        <strong>Explain Validation:</strong>
+        <ul>
+          <li>"Name regex: <code>/^[A-Za-z ]+$/</code> - letters and spaces only"</li>
+          <li>"Phone regex: <code>/^\d+$/</code> - digits only, min 6 characters"</li>
+          <li>"Live validation runs on input and blur events"</li>
+          <li>"Submit disabled until all fields valid"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>7️⃣ Order Success & Spaces Update (2 min)</h3>
+      <p><strong>Show:</strong> Order success page</p>
+      <div class="talking-points">
+        <strong>Point out:</strong>
+        <ul>
+          <li>"Order ID from backend response"</li>
+          <li>"Customer details displayed"</li>
+          <li>"Total amount shown"</li>
+        </ul>
+      </div>
+      
+      <p><strong>Verify Spaces Updated:</strong></p>
+      <ol>
+        <li>Click "Browse More Lessons"</li>
+        <li>Find lessons that were ordered</li>
+        <li>Show spaces count has decreased</li>
+      </ol>
+      
+      <div class="talking-points">
+        <strong>Say:</strong>
+        <ul>
+          <li>"After successful order, spaces automatically update"</li>
+          <li>"Each PUT request decrements spaces by quantity ordered"</li>
+          <li>"This completes the order flow"</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>💻 Code Walkthrough (5 min - if time permits)</h2>
+
+    <div class="step">
+      <h3>Show Key Code Sections</h3>
+      
+      <p><strong>1. app.js - Page Switching (lines 70-80):</strong></p>
+      <div class="talking-points">
+        <ul>
+          <li>"currentPage variable controls which view displays"</li>
+          <li>"No router needed - uses v-if in HTML"</li>
+          <li>"Simple and meets course requirements"</li>
+        </ul>
+      </div>
+      
+      <p><strong>2. app.js - Fetch Example (lines 180-210):</strong></p>
+      <div class="talking-points">
+        <ul>
+          <li>"All API calls use fetch() + Promises"</li>
+          <li>"No axios as per requirements"</li>
+          <li>"Async/await for clean code"</li>
+        </ul>
+      </div>
+      
+      <p><strong>3. app.js - Validation (lines 385-410):</strong></p>
+      <div class="talking-points">
+        <ul>
+          <li>"Regex patterns for name and phone"</li>
+          <li>"Live validation updates error messages"</li>
+          <li>"Form only submits when valid"</li>
+        </ul>
+      </div>
+      
+      <p><strong>4. index.html - v-if Structure (lines 40-60):</strong></p>
+      <div class="talking-points">
+        <ul>
+          <li>"v-if='currentPage === ...' controls visibility"</li>
+          <li>"Each page is a section in single HTML file"</li>
+          <li>"Vue handles DOM updates automatically"</li>
+        </ul>
+      </div>
+      
+      <p><strong>5. styles.css - Theme Variables (lines 1-40):</strong></p>
+      <div class="talking-points">
+        <ul>
+          <li>"CSS custom properties for colors"</li>
+          <li>"body.dark-mode overrides variables"</li>
+          <li>"Smooth transitions between themes"</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>🎯 Key Points to Emphasize</h2>
+
+    <div class="talking-points">
+      <strong>Technical Requirements Met:</strong>
+      <ul>
+        <li><span class="highlight">Vue 2 only</span> - via CDN, not Vue 3</li>
+        <li><span class="highlight">No build tools</span> - plain HTML/CSS/JS files</li>
+        <li><span class="highlight">fetch() API</span> - all HTTP calls, no axios</li>
+        <li><span class="highlight">v-if page switching</span> - no Vue Router</li>
+        <li><span class="highlight">GitHub Pages ready</span> - static files</li>
+        <li><span class="highlight">Form validation</span> - name (letters+spaces), phone (digits)</li>
+        <li><span class="highlight">Search & Sort</span> - backend integration with query params</li>
+        <li><span class="highlight">Order flow</span> - POST order → PUT spaces</li>
+      </ul>
+    </div>
+
+    <h2>❓ Potential Questions & Answers</h2>
+
+    <div class="step">
+      <p><strong>Q: Why Vue 2 instead of Vue 3?</strong></p>
+      <p>A: Course requirement specified Vue 2 only.</p>
+    </div>
+
+    <div class="step">
+      <p><strong>Q: Why not use Vue Router?</strong></p>
+      <p>A: Requirements state to use v-if for page switching. This keeps it simple and meets the spec.</p>
+    </div>
+
+    <div class="step">
+      <p><strong>Q: How does search work?</strong></p>
+      <p>A: On every keystroke, it calls the backend with GET /lessons?q=<query>. Backend filters and returns results.</p>
+    </div>
+
+    <div class="step">
+      <p><strong>Q: How is state managed?</strong></p>
+      <p>A: All state is in the Vue data object: lessons, cart, currentPage, user info, etc. No Vuex needed for this scope.</p>
+    </div>
+
+    <div class="step">
+      <p><strong>Q: Is the cart persisted?</strong></p>
+      <p>A: No, cart is in-memory only. Requirements don't ask for persistence. Only theme preference is saved to localStorage.</p>
+    </div>
+
+    <div class="step">
+      <p><strong>Q: How are spaces updated?</strong></p>
+      <p>A: After POST /orders succeeds, the app loops through cart items and makes PUT /lessons/:id requests to decrement spaces.</p>
+    </div>
+
+    <h2>✅ Pre-Demo Checklist</h2>
+
+    <ul class="checklist">
+      <li>Backend running and accessible</li>
+      <li>Frontend server running (port 8080)</li>
+      <li>Browser open to http://localhost:8080</li>
+      <li>DevTools open (F12)</li>
+      <li>Network tab visible and cleared</li>
+      <li>Console tab checked (no errors)</li>
+      <li>Demo script reviewed</li>
+      <li>Screenshots ready (optional backup)</li>
+      <li>Code editor open with key files</li>
+    </ul>
+
+    <div class="important">
+      <strong>🎬 Final Tip:</strong>
+      <p>Practice the demo flow 2-3 times before presenting. Know where the key code sections are. Be confident explaining why certain design decisions were made (Vue 2, fetch, v-if, etc.) - they align with course requirements.</p>
+      <p><strong>Good luck! 🚗💨</strong></p>
+    </div>
+  </div>
+</body>
+</html>
