@@ -4,7 +4,7 @@ A modern, responsive single-page application for browsing and booking driving le
 
 ![DecaDrive Logo](assets/logo.svg)
 
-## 🎯 Features
+## Features
 
 - **Vue 2 Single-Page App** - No router, uses `v-if`/`v-else` for page switching
 - **Beautiful UI/UX** - Apple-inspired clean design with Material 3 principles
@@ -16,7 +16,7 @@ A modern, responsive single-page application for browsing and booking driving le
 - **Accessibility** - Semantic HTML, keyboard navigation, reduced motion support
 - **No Build Tools** - Pure HTML/CSS/JS files, ready to deploy
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -55,7 +55,7 @@ A modern, responsive single-page application for browsing and booking driving le
 
    Navigate to: `http://localhost:8080`
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 frontend/
@@ -64,7 +64,6 @@ frontend/
 ├── styles.css          # All styles with light/dark theme support
 ├── assets/
 │   └── logo.svg        # DecaDrive logo (steering wheel + car icon)
-├── screenshots/        # (Add screenshots here for demo)
 └── README.md           # This file
 ```
 
@@ -237,7 +236,7 @@ curl -X PUT http://localhost:3000/lessons/abc123 \
 - Uses consistent spacing scale (0.25rem to 3rem)
 - CSS custom properties for easy theming
 
-## ✅ Form Validation Rules
+## Form Validation Rules
 
 ### Name Field
 
@@ -266,75 +265,12 @@ curl -X PUT http://localhost:3000/lessons/abc123 \
 - **Visual feedback**: Red border + error icon + message
 - **Submit button**: Disabled until all fields valid
 
-## 🚢 Deployment to GitHub Pages
-
-### Method 1: Deploy entire repository
-
-1. **Push to GitHub:**
-
-   ```bash
-   cd /Users/paulkamani/Documents/decadrive/frontend
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/yourusername/decadrive-frontend.git
-   git push -u origin main
-   ```
-
-2. **Enable GitHub Pages:**
-
-   - Go to repository Settings → Pages
-   - Source: Deploy from branch
-   - Branch: `main` / root
-   - Save
-
-3. **Update backend URL:**
-   - In `app.js`, change `BACKEND_URL` to your production backend
-   - Commit and push changes
-
-### Method 2: Deploy via gh-pages branch (cleaner)
-
-```bash
-# Create orphan gh-pages branch
-git checkout --orphan gh-pages
-git reset --hard
-git commit --allow-empty -m "Init gh-pages"
-git push origin gh-pages
-
-# Back to main
-git checkout main
-
-# Deploy
-git subtree push --prefix . origin gh-pages
-```
-
-Your app will be available at: `https://yourusername.github.io/decadrive-frontend/`
-
-## 🔧 Configuration
-
-### Backend URL
-
-Located in `app.js` (line 18):
-
-```javascript
-const BACKEND_URL = "http://localhost:3000";
-```
-
-Change this to your deployed backend URL before deploying to production.
-
 ### Theme Persistence
 
 Theme preference is saved to `localStorage` with key `darkMode`.
 To clear: `localStorage.removeItem('darkMode')`
 
-## 📱 Responsive Breakpoints
-
-- **Desktop**: > 768px (full layout)
-- **Tablet**: 481px - 768px (stacked sidebars)
-- **Mobile**: ≤ 480px (single column, compact nav)
-
-## ♿ Accessibility Features
+## Accessibility Features
 
 - **Semantic HTML**: Proper use of `<nav>`, `<main>`, `<footer>`, headings
 - **Keyboard Navigation**: All interactive elements focusable
@@ -343,7 +279,7 @@ To clear: `localStorage.removeItem('darkMode')`
 - **ARIA**: Icons marked as `aria-hidden` where decorative
 - **Reduced Motion**: Respects `prefers-reduced-motion` media query
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Issue: Lessons not loading
 
@@ -371,7 +307,7 @@ To clear: `localStorage.removeItem('darkMode')`
 - **Check**: Not in private/incognito mode (may restrict localStorage)
 - **Solution**: Try a different browser
 
-## 📚 Code Documentation
+## Code Documentation
 
 All code includes extensive inline comments explaining:
 
@@ -383,7 +319,7 @@ All code includes extensive inline comments explaining:
 
 These comments are designed to help during demo presentations and code walkthroughs.
 
-## 🎓 Technologies Used
+## Technologies Used
 
 - **Vue 2.7.16** - Progressive JavaScript framework (via CDN)
 - **Material Icons** - Icon font for UI affordances (via Google Fonts CDN)
@@ -391,17 +327,7 @@ These comments are designed to help during demo presentations and code walkthrou
 - **CSS Custom Properties** - For theming and design system
 - **LocalStorage API** - For theme persistence
 
-## 📄 License
-
-This project is created for coursework/educational purposes.
-
-## 👤 Author
-
-Created for CST3144 Coursework - DecaDrive Project
-
----
-
-## 💡 Tips for Demo
+## Tips for Demo
 
 1. **Show the code**: Open `app.js` and point out commented sections
 2. **Explain page switching**: Show `currentPage` variable and `v-if` in HTML
@@ -410,28 +336,3 @@ Created for CST3144 Coursework - DecaDrive Project
 5. **Highlight responsiveness**: Resize browser window
 6. **Theme toggle**: Switch themes and explain CSS custom properties
 7. **Order flow**: Walk through entire process from browse to confirmation
-
-## 🎯 Course Requirements Checklist
-
-- ✅ Vue 2 only (not Vue 3)
-- ✅ No template engines
-- ✅ fetch() + Promises for all API calls (no axios)
-- ✅ Works on GitHub Pages (static files)
-- ✅ Plain HTML/CSS/JS
-- ✅ Light/dark mode toggle
-- ✅ DecaDrive logo and branded UI
-- ✅ Font icons (Material Icons)
-- ✅ Responsive and mobile-friendly
-- ✅ Page switching with v-if
-- ✅ All pages implemented (home, lessons, cart, checkout, success)
-- ✅ Search-as-you-type
-- ✅ Sorting functionality
-- ✅ Cart management
-- ✅ Form validation (name: letters+spaces, phone: digits)
-- ✅ Order submission with space updates
-- ✅ Comprehensive comments for demo
-- ✅ Complete documentation
-
----
-
-**Ready to demo! 🚗💨**
