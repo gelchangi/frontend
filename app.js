@@ -1,17 +1,4 @@
-/**
- * DecaDrive Frontend - Vue 2 Application
- *
- * Purpose: Single-page application for browsing driving lessons, managing cart, and placing orders.
- * This file contains all application logic, state management, and API integration.
- *
- * Why Vue 2: Requirement specifies Vue 2 only, loaded via CDN for simplicity.
- * Why fetch: Requirement specifies fetch() + Promises for all API calls (no axios).
- * Why no router: Single-page app uses v-if for page switching as per requirements.
- */
-
-// ============================================================================
 // CONFIGURATION
-// ============================================================================
 
 /**
  * Backend API base URL
@@ -20,9 +7,7 @@
  */
 const BACKEND_URL = "https://decadrive-backend.onrender.com";
 
-// ============================================================================
 // MAIN VUE INSTANCE
-// ============================================================================
 
 /**
  * Main Vue application instance
@@ -30,26 +15,6 @@ const BACKEND_URL = "https://decadrive-backend.onrender.com";
  */
 new Vue({
   el: "#app",
-
-  /**
-   * DATA - Application State
-   *
-   * Why each property exists:
-   * - currentPage: Controls which view is displayed via v-if (home, lessons, cart, checkout, orderSuccess)
-   * - darkMode: Tracks current theme preference (true = dark, false = light)
-   * - lessons: Array of lesson objects fetched from backend
-   * - cart: Array of cart items {id, lesson, qty} - represents user's shopping cart
-   * - searchQuery: Current search term for filtering lessons
-   * - sortBy: Field to sort lessons by (subject, location, price, spaces)
-   * - sortOrder: Sort direction ('asc' or 'desc')
-   * - user: Object holding checkout form data {name, phone}
-   * - validationErrors: Object tracking form validation errors
-   * - loading: Boolean indicating if API request is in progress
-   * - isProcessing: Boolean preventing duplicate submissions during async operations
-   * - error: String containing error message if API call fails
-   * - orderId: Order ID returned from successful order submission
-   * - lastOrderTotal: Total amount from last successful order (for success page)
-   */
   data: {
     currentPage: "home",
     darkMode: false,
@@ -519,34 +484,3 @@ new Vue({
     },
   },
 });
-
-/**
- * DEMO NOTES FOR STUDENT PRESENTATION:
- *
- * 1. Page Switching: Show how v-if controls which view is displayed
- *    - currentPage variable determines the active view
- *    - No router needed for this coursework
- *
- * 2. Search & Sort: Demonstrate search-as-you-type and sorting
- *    - Each keystroke calls fetchLessons() with ?q= parameter
- *    - Sort controls send sortBy and order parameters to backend
- *
- * 3. Cart Workflow: Add items, adjust quantities, show total
- *    - Cart stored in-memory (no persistence required)
- *    - Quantity validation against available spaces
- *
- * 4. Checkout Validation: Show live validation as you type
- *    - Name: letters and spaces only
- *    - Phone: digits only, minimum 6
- *    - Submit button disabled until valid
- *
- * 5. Order Flow: Submit → Update Spaces → Success
- *    - POST /orders creates order
- *    - PUT /lessons/:id updates spaces
- *    - Order ID displayed on success page
- *
- * 6. API Integration: All done with fetch() + Promises
- *    - No axios (requirement)
- *    - Error handling with try/catch
- *    - Loading states for better UX
- */
